@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div id="main_page">
+		<form id="mc-form" action="https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy" method="POST">
+			<div>
+				<input id="Email" name="Email" class="email" type="email" placeholder="* 電子信箱"  required>
+			</div>
+
+			<div>
+				<input id="LastName" name="LastName" type="text" placeholder="* 姓氏" required>
+			</div>
+
+			<div>
+				<input id="FirstName" name="FirstName" type="text" placeholder="* 名字" required>
+			</div>
+
+			<div>
+				<input id="MobilePhone" name="MobilePhone" class="taiwan-phone" type="text" placeholder="* 電話" required>
+			</div>
+
+			<div>
+				<select id="Birthdate" name="Birthdate" required>
+					<option value="">* 出生年份</option>
+				</select>		
+			</div>
+			
+			<div>
+				<input id="OptIn" name="OptIn" type="checkbox" checked />
+				<label for="OptIn">
+					我願意收到綠色和平發送的電子通訊，掌握環保工作的最新消息！我並同意綠色和平按照其
+					<a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref="
+						title="個人隱私政策" target="_blank">個人隱私政策</a>
+					與我保持聯絡。
+				</label>
+			</div>
+			
+			<input placeholder="MobileCountryCode" name="MobileCountryCode" type="hidden" value="886">
+			<input type="hidden" name="req" value="post_data">
+			<input type="hidden" name="LeadSource" value="Petition - Climate">
+			<input type="hidden" name="Petition_Interested_In_Arctic__c" value="false">
+			<input type="hidden" name="Petition_Interested_In_Climate__c" value="true">
+			<input type="hidden" name="Petition_Interested_In_Forest__c" value="false">
+			<input type="hidden" name="Petition_Interested_In_Health__c" value="false">
+			<input type="hidden" name="Petition_Interested_In_Oceans__c" value="false">
+			<input type="hidden" name="Petition_Interested_In_Plastics__c" value="false">
+			<input type="hidden" name="CampaignId" value="7012u000000OwvfAAC">
+			<input type="hidden" name="UtmMedium" id="UtmMedium" value="">
+			<input type="hidden" name="UtmSource" id="UtmSource" value="">
+			<input type="hidden" name="UtmCampaign" id="UtmCampaign" value="">
+			<input type="hidden" name="UtmContent" id="UtmContent" value="">
+			<input type="hidden" name="UtmTerm" id="UtmTerm" value="">
+			<input type="hidden" name="DonationPageUrl" value="">	
+			
+			<div>
+				<button id="submit_btn" type="submit">立即連署</button>
+			</div>
+		</form>
+	</div>
+	<div id="thank_you_page">
+		This is thank you page.
+		<button id="donate_btn" class="is-hidden-at-dd-page-only">捐助支持</button>
+		<div id="line_block"></div>
+	</div>
+<body>
+<!-- 
+[MailCheck]
+The Javascript library and jQuery plugin that suggests a right domain when your users misspell it in an email address.
+https://github.com/mailcheck/mailcheck
+-->
+<script src="https://change.greenpeace.org.tw/2020/petition/zh-TW.2020.climate.emergency.signup.mc/js/mailcheck.min.js"></script>
+<script>
+let domains = [
+	"me.com",
+	"outlook.com",
+	"netvigator.com",
+	"cloud.com",
+	"live.hk",
+	"msn.com",
+	"gmail.com",
+	"hotmail.com",
+	"ymail.com",
+	"yahoo.com",
+	"yahoo.com.tw",
+	"yahoo.com.hk"
+];
+let topLevelDomains = ["com", "net", "org"];
+let email = document.getElementById("Email");
+
+email.onblur = function(){
+	if (!document.getElementById("email-suggestion")) {
+		Mailcheck.run({
+			email: email.value,
+			domains: domains,                       // optional
+			topLevelDomains: topLevelDomains,       // optional
+			suggested: function(suggestion) {		
+				email.insertAdjacentHTML('afterend', `<div id="email-suggestion" style="font-size:small; color:blue; line-height:2rem;">您想輸入的是 <strong id="emailSuggestion">${suggestion.full}</strong> 嗎？</div>`);
+				
+				document.getElementById("email-suggestion").onclick = function() {
+					email.value = document.getElementById("emailSuggestion").innerText;
+					document.getElementById("email-suggestion").remove();
+					document.querySelector("")
+				};
+			},
+			empty: function() {
+				this.emailSuggestion = null;
+			}
+		});
+	}
+};
+</script>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Form init & Validation 
+[jQuery Validation Plugin]
+https://jqueryvalidation.org/
+-->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>        
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+    // create the year options
+	let currYear = new Date().getFullYear();
+    for (var i = 0; i < 100; i++) {
+		let option = `<option value="${currYear-i}-01-01">${currYear-i}</option>`;
+		let obj = document.getElementById('Birthdate');
+		obj.add(new Option(currYear-i, `${currYear-i}-01-01`));
+    }
+
+	// form validation
+	$.validator.addMethod(
+        'email',
+        function(value, element){
+          return this.optional(element) || /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/i.test(value);
+        },
+        'Email 格式錯誤'
+    );
+
+    $.validator.addMethod(
+        'taiwan-phone',
+        function (value, element) {
+			const phoneReg6 = new RegExp(/^(0|886|\+886)?(9\d{8})$/).test(value);
+			const phoneReg7 = new RegExp(/^(0|886|\+886){1}[3-8]-?\d{6,8}$/).test(value);
+			const phoneReg8 = new RegExp(/^(0|886|\+886){1}[2]-?\d{8}$/).test(value);
+        
+			if ($('#MobilePhone').prop('required')) {
+				return this.optional(element) || phoneReg6 || phoneReg7 || phoneReg8;
+			} else if ($('#MobilePhone').val()) {
+				return this.optional(element) || phoneReg6 || phoneReg7 || phoneReg8;
+			}
+			return true;
+        },
+        "電話格式不正確，請輸入格式 0912345678 或 02-12345678");
+
+    $.validator.addClassRules({ // connect it to a css class
+        "email": {email: true},
+        "taiwan-phone" : { "taiwan-phone" : true }
+    });
+
+    $.extend($.validator.messages, {
+        required: "必填欄位"
+    });
+      
+    $("#mc-form").validate({       
+        submitHandler: function() {          
+			showFullPageLoading();
+			
+			let formData = new FormData();
+			document.querySelectorAll("#mc-form input,select").forEach(function (el, idx) {
+				let v = null
+				if (el.type==="checkbox") {
+					v = el.checked;
+				} else {
+					v = el.value;
+				}
+
+				formData.append(el.name, v);
+				//console.log("Use", el.name, v);
+			});
+
+			fetch(document.querySelector("#mc-form").action, {
+				method: 'POST',
+				body: formData
+			})
+			.then(response => {return response.json()})
+			.then(response => {            				
+				if (response) {              										
+					// hide the Form, display the thank you div
+					$('#main_page').hide();
+					$('#thank_you_page').fadeIn();
+              
+					if (response.Supporter) {
+						// add tracking code here
+						console.log('success');
+						console.log(response);
+					}
+				}
+				hideFullPageLoading();
+			})
+			.catch(error => {
+				console.log(error);
+				hideFullPageLoading();
+				// display the error message                      
+			});
+        }
+	});
+		
+	/**
+	 * This is a full page loading animation	 
+     */
+    const showFullPageLoading = () => {
+		if ( !document.querySelector("#page-loading")) {
+			document.querySelector("body").insertAdjacentHTML('beforeend', `
+				<div id="page-loading" class="hide">
+				<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+				</div>`);
+        }
+
+        setTimeout(() => { // to enable the transition
+          document.querySelector("#page-loading").classList.remove("hide")
+        }, 0)
+	}
+    /**
+     * Hide the full page loading
+     */
+    const hideFullPageLoading = () => {
+		document.querySelector("#page-loading").classList.add("hide")
+
+        setTimeout(() => {
+          document.querySelector("#page-loading").remove()
+        }, 1100)
+	} 
+});
+</script>
+
+<script type="module">
+import { line_QR_code, hide_donate_btn } from './utm_source_dd.js'
+
+window.addEventListener('DOMContentLoaded', (event) => {	
+	// set line QR code in the thank you page
+	line_QR_code('#line_block');
+	//hide_donate_btn('donate_btn');
+});
+</script>
+</html>
